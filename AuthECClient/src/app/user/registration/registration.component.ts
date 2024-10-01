@@ -11,11 +11,12 @@ import {ToastrService} from 'ngx-toastr';
 
 import {AuthService} from '../../shared/auth.service';
 import {FirstKeyPipe} from '../../shared/pipes/first-key.pipe';
+import { RouterLink } from '@angular/router';
 
 @Component({
     selector : 'app-registration',
     standalone : true,
-    imports : [ ReactiveFormsModule, CommonModule, FirstKeyPipe ],
+    imports : [ ReactiveFormsModule, CommonModule, FirstKeyPipe, RouterLink ],
     templateUrl : './registration.component.html',
     styles : ``
 
