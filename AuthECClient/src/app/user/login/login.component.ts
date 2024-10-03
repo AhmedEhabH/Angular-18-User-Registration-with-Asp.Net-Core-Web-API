@@ -1,7 +1,9 @@
 import {CommonModule} from '@angular/common';
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
-import {RouterLink} from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
+import { AuthService } from '../../shared/auth.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
     selector : 'app-login',
@@ -13,7 +15,7 @@ import {RouterLink} from '@angular/router';
 export class LoginComponent implements OnInit {
     form: any;
     isSubmitted: boolean = false;
-    constructor(public formBuilder: FormBuilder) {}
+    constructor(public formBuilder: FormBuilder, private service:AuthService, private router:Router, private toastr:ToastrService) {}
     ngOnInit(): void {
         this.form = this.formBuilder.group({
             email : [ '', [ Validators.required, Validators.email ] ],
@@ -22,10 +24,25 @@ export class LoginComponent implements OnInit {
     }
 
     onSubmit() {
-        console.log(`Submit ${this.form.value}`);
-        
         this.isSubmitted = true;
-        console.log(this.form.value);
+        if(this.form.valid){
+            this.service.signin(this.form.value).subscribe({
+                next: (res:any) => {
+                    localStorage.setItem('token', res.token);
+                    this.router.navigateByUrl('/dashboard');
+                    // this.toastr.success(res, 'Login successful');
+                },
+                error: (error) => {
+                    console.error(error);
+                    if (error.status == 400) {
+                        this.toastr.error("Incorrect email or password", "Login failed");
+                    }
+                    else{
+                        console.error(`error during login: :(\n`);
+                    }
+                }
+            })
+        }
         
     }
 
