@@ -1,7 +1,12 @@
 using AuthECAPI.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +32,21 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DevDB"));
 });
 
+builder.Services.AddAuthentication(x =>
+{
+    x.DefaultAuthenticateScheme = null;
+    x.DefaultChallengeScheme = null;
+    x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(y =>
+{
+    y.SaveToken = false;
+    y.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["AppSettings:JWTSecret"]!))
+    };
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -43,6 +63,8 @@ app.UseCors(options =>
     options.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader();
 });
 #endregion
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
@@ -63,6 +85,32 @@ app.MapPost("/api/signup", async (UserManager<AppUser> userManager, [FromBody] U
     return result.Succeeded?Results.Ok(result):Results.BadRequest(result);
 });
 
+app.MapPost("/api/signin", async (UserManager<AppUser> userManager, [FromBody] LoginModel userLoginModel) => 
+{
+    var user = await userManager.FindByEmailAsync(userLoginModel.Email);
+    if (user != null && await userManager.CheckPasswordAsync(user, userLoginModel.Password))
+    {
+        var signInKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["AppSettings:JWTSecret"]!));
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
+            Subject = new ClaimsIdentity(new Claim[]
+            {
+                new Claim("UserID", user.Id.ToString())
+            }),
+            Expires = DateTime.UtcNow.AddDays(10),
+            SigningCredentials = new SigningCredentials(signInKey, SecurityAlgorithms.HmacSha256Signature)
+        };
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var securityToken = tokenHandler.CreateToken(tokenDescriptor);
+        var token = tokenHandler.WriteToken(securityToken);
+        return Results.Ok(new { token });
+    }
+    else 
+    {
+        return Results.BadRequest(new { message = "Username or password is incorrect" });
+    }
+});
+
 app.Run();
 
 public class UserRegistrationModel
@@ -70,4 +118,9 @@ public class UserRegistrationModel
     public string Email { get; set; }
     public string Password { get; set; }
     public string FullName { get; set; }
+}
+public class LoginModel
+{
+    public string Email { get; set; }
+    public string Password { get; set; }
 }

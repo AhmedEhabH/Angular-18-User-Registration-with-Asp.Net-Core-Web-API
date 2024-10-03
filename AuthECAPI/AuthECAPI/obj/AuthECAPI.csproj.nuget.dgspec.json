@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\World\\my-problems\\CSharp\\2024-09-29-1510\\AuthECAPI\\AuthECAPI\\AuthECAPI.csproj": {}
+    "D:\\World\\my-problems\\CSharp\\2024-10-01-1430\\CodAffection\\Angular-18-User-Registration-with-Asp.Net-Core-Web-API\\AuthECAPI\\AuthECAPI\\AuthECAPI.csproj": {}
   },
   "projects": {
-    "D:\\World\\my-problems\\CSharp\\2024-09-29-1510\\AuthECAPI\\AuthECAPI\\AuthECAPI.csproj": {
+    "D:\\World\\my-problems\\CSharp\\2024-10-01-1430\\CodAffection\\Angular-18-User-Registration-with-Asp.Net-Core-Web-API\\AuthECAPI\\AuthECAPI\\AuthECAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\World\\my-problems\\CSharp\\2024-09-29-1510\\AuthECAPI\\AuthECAPI\\AuthECAPI.csproj",
+        "projectUniqueName": "D:\\World\\my-problems\\CSharp\\2024-10-01-1430\\CodAffection\\Angular-18-User-Registration-with-Asp.Net-Core-Web-API\\AuthECAPI\\AuthECAPI\\AuthECAPI.csproj",
         "projectName": "AuthECAPI",
-        "projectPath": "D:\\World\\my-problems\\CSharp\\2024-09-29-1510\\AuthECAPI\\AuthECAPI\\AuthECAPI.csproj",
+        "projectPath": "D:\\World\\my-problems\\CSharp\\2024-10-01-1430\\CodAffection\\Angular-18-User-Registration-with-Asp.Net-Core-Web-API\\AuthECAPI\\AuthECAPI\\AuthECAPI.csproj",
         "packagesPath": "C:\\Users\\Ahmed\\.nuget\\packages\\",
-        "outputPath": "D:\\World\\my-problems\\CSharp\\2024-09-29-1510\\AuthECAPI\\AuthECAPI\\obj\\",
+        "outputPath": "D:\\World\\my-problems\\CSharp\\2024-10-01-1430\\CodAffection\\Angular-18-User-Registration-with-Asp.Net-Core-Web-API\\AuthECAPI\\AuthECAPI\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Ahmed\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -40,6 +40,10 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[8.0.8, )"
+            },
             "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
               "target": "Package",
               "version": "[8.0.8, )"
